@@ -25,13 +25,14 @@ jobs:
       - name: Create virtual environment
         run: python -m venv venv
 
-      # Step 4: Install dependencies
+      ## Step 4: Install dependencies
       - name: Install dependencies
         run: |
           source venv/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install httpx2
 
       # Step 5: Run tests
       - name: Run tests
