@@ -51,14 +51,14 @@ jobs:
       
 # 6. Build Docker image
       - name: Build Docker image
-        run: docker build -t python-ci-project:latest .
+        run: docker build -t mayuri67/python-ci-project:latest .
         # Step 5: Login to Docker Hub
       - name: Login to Docker Hub
         if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.dockerhub_username }}
+          password: ${{ secrets.dockerhub_token }}
 
 # Step 7: Build and push Docker image
       - name: Build and push Docker image
