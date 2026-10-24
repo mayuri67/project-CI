@@ -48,7 +48,30 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Step 6: Login to Docker Hub
+      # Step 6: Build Docker image locally
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          push: false
+          tags: |
+            mayuri67/python-ci-project:latest
+            mayuri67/python-ci-project:${{ github.sha }}
+
+      # Step 7: Scan Docker image using Trivy
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: mayuri67/python-ci-project:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
+
+      # Step 8: Login to Docker Hub
       - name: Login to Docker Hub
         if: github.event_name == 'push'
         uses: docker/login-action@v3
@@ -56,14 +79,9 @@ jobs:
           username: ${{ secrets.dockerhub_username }}
           password: ${{ secrets.dockerhub_token }}
 
-      # Step 7: Build and push Docker image
-      - name: Build and push Docker image
+      # Step 9: Push Docker image
+      - name: Push Docker image
         if: github.event_name == 'push'
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            mayuri67/python-ci-project:latest
-            mayuri67/python-ci-project:${{ github.sha }}
+        run: |
+          docker push mayuri67/python-ci-project:latest
+          docker push mayuri67/python-ci-project:${{ github.sha }}
