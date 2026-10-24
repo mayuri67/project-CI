@@ -48,11 +48,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      
-# 6. Build Docker image
-      - name: Build Docker image
-        run: docker build -t mayuri67/python-ci-project:latest .
-        # Step 5: Login to Docker Hub
+      # Step 6: Login to Docker Hub
       - name: Login to Docker Hub
         if: github.event_name == 'push'
         uses: docker/login-action@v3
@@ -60,7 +56,7 @@ jobs:
           username: ${{ secrets.dockerhub_username }}
           password: ${{ secrets.dockerhub_token }}
 
-# Step 7: Build and push Docker image
+      # Step 7: Build and push Docker image
       - name: Build and push Docker image
         if: github.event_name == 'push'
         uses: docker/build-push-action@v6
@@ -69,5 +65,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            YOUR_DOCKERHUB_USERNAME/python-ci-project:latest
-            YOUR_DOCKERHUB_USERNAME/python-ci-project:${{ github.sha }}
+            mayuri67/python-ci-project:latest
+            mayuri67/python-ci-project:${{ github.sha }}
